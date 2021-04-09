@@ -4,10 +4,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -60,37 +61,37 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void runUssd(){
+    private void runUssd() {
         //String ussdCode = "*123#";
         String ussdCode = ussdEditText.getText().toString();
 
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(ussdToCallableUri(ussdCode));
-        try{
+        try {
             startActivity(intent);
-        } catch (SecurityException e){
+        } catch (SecurityException e) {
             e.printStackTrace();
         }
     }
 
     private Uri ussdToCallableUri(String ussd) {
-        String uriString = "";
-        if(!ussd.startsWith("tel:"))
-            uriString += "tel:";
+        StringBuilder uriString = new StringBuilder();
+        if (!ussd.startsWith("tel:"))
+            uriString.append("tel:");
 
-        for(char c : ussd.toCharArray()) {
-            if(c == '#')
-                uriString += Uri.encode("#");
+        for (char c : ussd.toCharArray()) {
+            if (c == '#')
+                uriString.append(Uri.encode("#"));
             else
-                uriString += c;
+                uriString.append(c);
         }
 
-        return Uri.parse(uriString);
+        return Uri.parse(uriString.toString());
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_PHONE_CALL: {
                 // If request is cancelled, the result arrays are empty.
